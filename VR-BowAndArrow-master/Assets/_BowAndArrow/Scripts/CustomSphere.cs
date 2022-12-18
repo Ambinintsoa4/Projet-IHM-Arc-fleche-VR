@@ -3,6 +3,7 @@ using System.Collections;
 using System.Globalization;
 using System.IO;
 using System.IO.Ports;
+using System.Linq;
 using UnityEngine;
 
 
@@ -40,6 +41,7 @@ public class CustomSphere : MonoBehaviour
     private const float PullThreshold = -0.10f;
     private const float ReleaseThreshold = -0.20f;
     private const float defaultZPosition = -0.17f;
+    public Transform m_FixedSphere = null;
 
     #region triggers
     public bool StartPulling()
@@ -68,7 +70,7 @@ public class CustomSphere : MonoBehaviour
         pulling = false;
         maxRecordedValue = default(float);
         currentValue = default(float);
-        transform.position = new Vector3(0, 1, defaultZPosition);
+        transform.position = m_FixedSphere.transform.position;
     }
 
     private bool IsLeftOpSmallerOrEqual(float a, float b)
@@ -78,6 +80,7 @@ public class CustomSphere : MonoBehaviour
 
     public void Move(string message)
     {
+        //Log(message);
         const float startTrackingValue = defaultZPosition + PullThreshold;
         if (float.TryParse(message, NumberStyles.Float, NumberFormatInfo.InvariantInfo ,out var value))
         {
@@ -93,7 +96,8 @@ public class CustomSphere : MonoBehaviour
 
 
             currentValue = pullValue;
-            transform.position = new Vector3(0, 1, currentValue);
+            transform.position = m_FixedSphere.transform.position;
+            transform.Translate(new Vector3(0, 0, pullValue), m_FixedSphere.transform);
             if (IsLeftOpSmallerOrEqual(maxRecordedValue, currentValue))
             {
                 maxRecordedValue = currentValue;
@@ -107,9 +111,14 @@ public class CustomSphere : MonoBehaviour
         }
     }
 
+    private void Log(string message)
+    {
+        File.AppendAllLines(@"C:\Users\Ambin\dataESP.txt", Enumerable.Repeat(message, 1));
+    }
+
     public float ScaleValue(float value)
     {
-        const float scale = -1 * 3000f;
+        const float scale = -1 * 3000f; //-1 * 3000f
         const float adjustment = 0f;
 
         var scaledValue = (value - adjustment) / scale;
@@ -135,17 +144,18 @@ public class CustomSphere : MonoBehaviour
             return maxScale;
 
         return maxScale * (value - minValue) / maxValue + defaultZPosition;
+        //return -1 * (maxScale * (value - minValue) / maxValue + defaultZPosition);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (nbrFrame == 0)
-        {
+        //if (nbrFrame == 0)
+        //{
             WriteToArduino("PING");
-            nbrFrame = 60;
-        }
-        else nbrFrame--;
+            //nbrFrame = 60;
+        //}
+        //else nbrFrame--;
 
     }
 
@@ -208,6 +218,10 @@ public class CustomSphere : MonoBehaviour
                 yield return null;
             }
             else
+
+                //dataString = stream.ReadLine();
+                //callback(dataString);
+                //Log(dataString);
                 yield return new WaitForSeconds(0.05f);
 
             nowTime = DateTime.Now;
