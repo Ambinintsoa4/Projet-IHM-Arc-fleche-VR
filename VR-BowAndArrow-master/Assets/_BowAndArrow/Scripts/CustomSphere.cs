@@ -38,8 +38,8 @@ public class CustomSphere : MonoBehaviour
     //private const float DefaultPosition = -0.165f;
     private float maxRecordedValue = default(float);
     private float currentValue = default(float);
-    private const float PullThreshold = -0.10f;
-    private const float ReleaseThreshold = -0.20f;
+    private const float PullThreshold = -0.41f; //-0.10f
+    private const float ReleaseThreshold = -0.10f;
     private const float defaultZPosition = -0.17f;
     public Transform m_FixedSphere = null;
 
