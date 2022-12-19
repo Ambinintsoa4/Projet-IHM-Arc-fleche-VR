@@ -38,7 +38,7 @@ public class CustomSphere : MonoBehaviour
     //private const float DefaultPosition = -0.165f;
     private float maxRecordedValue = default(float);
     private float currentValue = default(float);
-    private const float PullThreshold = -0.41f; //-0.10f
+    private const float PullThreshold = -0.10f; 
     private const float ReleaseThreshold = -0.10f;
     private const float defaultZPosition = -0.17f;
     public Transform m_FixedSphere = null;
@@ -71,6 +71,7 @@ public class CustomSphere : MonoBehaviour
         maxRecordedValue = default(float);
         currentValue = default(float);
         transform.position = m_FixedSphere.transform.position;
+
     }
 
     private bool IsLeftOpSmallerOrEqual(float a, float b)
@@ -96,7 +97,10 @@ public class CustomSphere : MonoBehaviour
 
 
             currentValue = pullValue;
-            transform.position = m_FixedSphere.transform.position;
+            //transform.position = m_FixedSphere.transform.position;
+            var position = m_FixedSphere.transform.position;
+            transform.position = new Vector3(position.x, position.y, position.z);
+
             transform.Translate(new Vector3(0, 0, pullValue), m_FixedSphere.transform);
             if (IsLeftOpSmallerOrEqual(maxRecordedValue, currentValue))
             {
@@ -130,12 +134,12 @@ public class CustomSphere : MonoBehaviour
         const float maxScale = -0.645f;
 
         // valeur minimum apres pour laquelle le scale donnera le maxScale
-        const float maxValue = 16.95f;
+        const float maxValue = 20f;
         //const float maxValue = 100;
 
         // valeur capturee au repos de la corde
         //const float minValue = 980;
-        const float minValue = 4.00f;
+        const float minValue = 9.84f;
 
         if (minValue > value)
             return defaultZPosition;
@@ -153,7 +157,7 @@ public class CustomSphere : MonoBehaviour
         //if (nbrFrame == 0)
         //{
             WriteToArduino("PING");
-            //nbrFrame = 60;
+        //    nbrFrame = 25;
         //}
         //else nbrFrame--;
 
